@@ -25,12 +25,17 @@ rms_box=250
 os.system('rm catalogue.txt detections.txt')
 detections = []
 for file in os.listdir('./'):
-    if file.endswith('.fits'):
+    if file.endswith('IM.fits'):
         fitld = AIPSTask('FITLD')
         hduheader = pyfits.open(file)[0].header
-        data = np.array(pyfits.open(file)[0].data[0,0,edge:edge+rms_box,edge:edge+rms_box])
+        print file
+        try:
+            data = np.array(pyfits.open(file)[0].data[0,0,edge:edge+rms_box,edge:edge+rms_box])
+        except IndexError:
+            data = np.array(pyfits.open(file)[0].data[edge:edge+rms_box,edge:edge+rms_box])
         if auto_rms == True:
             rms = float(np.sqrt(np.mean(data**2)))
+            print rms
         fitld.datain = 'PWD:%s' % file
         fitld.outname = str(i)
         fitld.outclass = 'IM'
@@ -42,16 +47,17 @@ for file in os.listdir('./'):
         sad.in2data = image
     	sad.blc[1:] = edge,edge
     	sad.trc[1:] = int(hduheader['NAXIS1'])-edge,int(hduheader['NAXIS2'])-edge
-        sad.dparm[1] = 5*rms
+        sad.dparm[1] = 6*rms
         sad.fitout = 'PWD:%s.fitout' % file
         sad.go()
         image.zap()
     	lines = open('%s.fitout' % file).readlines()
     	print len(lines)
     	if len(lines) > 24:
-    		detections = detections + [file]
-    		open('%s_r.fitout' % file, 'w').writelines(file)
-    		open('%s_r.fitout' % file, 'a').writelines(lines[18:])
+            detections = detections + [file]
+            open('%s_r.fitout' % file, 'w').writelines(file+'\n')
+            open('%s_r.fitout' % file, 'a').writelines(str(rms)+'\n')
+            open('%s_r.fitout' % file, 'a').writelines(lines[18:])
     	os.system('rm %s.fitout' % file)
 
 os.system('touch detections.txt')
