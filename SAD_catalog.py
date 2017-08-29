@@ -21,15 +21,20 @@ i=1
 auto_rms = True
 rms = 4.73189515179e-05
 edge = 100
+<<<<<<< HEAD
+rms_box=250
+postfix = 'Taper'
+=======
 rms_box=400
+>>>>>>> 4dc7b44574c370ea0bc169ad52d0352da8ccc619
 
-def SAD_fit_remove(files):
+def SAD_fit_remove(files,postfix):
     if os.path.isfile('catalogue.csv') == False:
-        s = 'Catalog_name rms #      Peak    Dpeak     Flux    Dflux    RA---SIN   DEC--SIN   Dx      Dy       Maj     Min      PA    Dmaj    Dmin    Dpa #  MAJ-fit MIN-fit PA-fit    MAJ-dec MIN-dec PA-dec  R  MAJ-low MIN-low PA-low    MAJ-hi  MIN-hi  PA-hi    Xpix   Ypix   MAXresid\n'
+        s = 'Catalog_name rms_{0} #_{0}      Peak_{0}    Dpeak_{0}     Flux_{0}    Dflux_{0}    RA---SIN_{0}   DEC--SIN_{0}  Dx_{0}      Dy_{0}       Maj_{0}     Min_{0}      PA_{0}    Dmaj_{0}    Dmin_{0}    Dpa_{0} #_{0}  MAJ-fit_{0} MIN-fit_{0} PA-fit_{0}    MAJ-dec_{0} MIN-dec_{0}  PA-dec_{0}  R _{0} MAJ-low_{0} MIN-low_{0}  PA-low_{0}    MAJ-hi_{0}  MIN-hi_{0}  PA-hi_{0}    Xpix_{0}   Ypix_{0}   MAXresid_{0}\n'.format(postfix)
         s = ' '.join(s.split())+'\n'
         s = s.replace(' ',',')
-        os.system('touch catalogue.csv')
-        text_file = open('catalogue.csv','a')
+        os.system('touch catalogue_%s.csv' % postfix)
+        text_file = open('catalogue_%s.csv' % postfix,'a')
         text_file.write(s)
     for j in files:
         with open(j) as f:
@@ -42,7 +47,7 @@ def SAD_fit_remove(files):
         x = ' '.join(x).replace('(',' ').replace(')',' ')
         x = ' '.join(x.split())
         text_file.write(x.replace(' ',',')+'\n')
-os.system('rm catalogue.csv detections.txt')
+os.system('rm catalogue_%s.csv detections.txt' % postfix)
 
 detections = []
 for file in os.listdir('./'):
@@ -76,7 +81,7 @@ for file in os.listdir('./'):
     	print len(lines)
     	if len(lines) > 24:
             detections = detections + [file]
-            open('%s_r.fitout' % file, 'w').writelines(file+'\n')
+            open('%s_r.fitout' % file, 'w').writelines(file[:8]+'\n')
             open('%s_r.fitout' % file, 'a').writelines(str(rms)+'\n')
             open('%s_r.fitout' % file, 'a').writelines(lines[18:])
     	os.system('rm %s.fitout' % file)
@@ -90,7 +95,7 @@ catalog_list = []
 for file in os.listdir('./'):
     if file.endswith('fitout'):
         catalog_list = catalog_list + [file]
-SAD_fit_remove(catalog_list)
+SAD_fit_remove(catalog_list,postfix)
 os.system('rm *fitout')
 
 def substring(string_list):
