@@ -26,7 +26,7 @@ postfix = 'Taper'
 
 def SAD_fit_remove(files,postfix):
     if os.path.isfile('catalogue.csv') == False:
-        s = 'Catalog_name rms_{0} BMAJ_{0} BMIN{0} BPA{0} #_{0}      Peak_{0}    Dpeak_{0}     Flux_{0}    Dflux_{0}    RA---SIN_{0}   DEC--SIN_{0}  Dx_{0}      Dy_{0}       Maj_{0}     Min_{0}      PA_{0}    Dmaj_{0}    Dmin_{0}    Dpa_{0} #_{0}  MAJ-fit_{0} MIN-fit_{0} PA-fit_{0}    MAJ-dec_{0} MIN-dec_{0}  PA-dec_{0}  R_{0} MAJ-low_{0} MIN-low_{0}  PA-low_{0}    MAJ-hi_{0}  MIN-hi_{0}  PA-hi_{0}    Xpix_{0}   Ypix_{0}   MAXresid_{0}\n'.format(postfix)
+        s = 'Catalog_name rms_{0} BMAJ_{0} BMIN_{0} BPA_{0} #_{0}      Peak_{0}    Dpeak_{0}     Flux_{0}    Dflux_{0}    RA---SIN_{0}   DEC--SIN_{0}  Dx_{0}      Dy_{0}       Maj_{0}     Min_{0}      PA_{0}    Dmaj_{0}    Dmin_{0}    Dpa_{0} #_{0}  MAJ-fit_{0} MIN-fit_{0} PA-fit_{0}    MAJ-dec_{0} MIN-dec_{0}  PA-dec_{0}  R_{0} MAJ-low_{0} MIN-low_{0}  PA-low_{0}    MAJ-hi_{0}  MIN-hi_{0}  PA-hi_{0}    Xpix_{0}   Ypix_{0}   MAXresid_{0}\n'.format(postfix)
         s = ' '.join(s.split())+'\n'
         s = s.replace(' ',',')
         os.system('touch catalogue_%s.csv' % postfix)
@@ -47,7 +47,7 @@ os.system('rm catalogue_%s.csv detections.txt' % postfix)
 
 detections = []
 for file in os.listdir('./'):
-    if file.endswith('IM.fits'):
+    if file.endswith('IM_casa.fits'):
         fitld = AIPSTask('FITLD')
         hduheader = pyfits.open(file)[0].header
         print file
@@ -85,8 +85,8 @@ for file in os.listdir('./'):
             detections = detections + [file]
             open('%s_r.fitout' % file, 'w').writelines(file[:8]+'\n')
             open('%s_r.fitout' % file, 'a').writelines(str(rms)+'\n')
-            open('%s_r.fitout' % file, 'a').writelines(str(BMAJ)+'\n')
-            open('%s_r.fitout' % file, 'a').writelines(str(BMIN)+'\n')
+            open('%s_r.fitout' % file, 'a').writelines(str(BMAJ*3600)+'\n')
+            open('%s_r.fitout' % file, 'a').writelines(str(BMIN*3600)+'\n')
             open('%s_r.fitout' % file, 'a').writelines(str(BPA)+'\n')
             open('%s_r.fitout' % file, 'a').writelines(lines[18:])
         os.system('rm %s.fitout' % file)
