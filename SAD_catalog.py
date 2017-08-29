@@ -26,7 +26,7 @@ postfix = 'Taper'
 
 def SAD_fit_remove(files,postfix):
     if os.path.isfile('catalogue.csv') == False:
-        s = 'Catalog_name rms_{0} #_{0}      Peak_{0}    Dpeak_{0}     Flux_{0}    Dflux_{0}    RA---SIN_{0}   DEC--SIN_{0}  Dx_{0}      Dy_{0}       Maj_{0}     Min_{0}      PA_{0}    Dmaj_{0}    Dmin_{0}    Dpa_{0} #_{0}  MAJ-fit_{0} MIN-fit_{0} PA-fit_{0}    MAJ-dec_{0} MIN-dec_{0}  PA-dec_{0}  R_{0} MAJ-low_{0} MIN-low_{0}  PA-low_{0}    MAJ-hi_{0}  MIN-hi_{0}  PA-hi_{0}    Xpix_{0}   Ypix_{0}   MAXresid_{0}\n'.format(postfix)
+        s = 'Catalog_name rms_{0} BMAJ_{0} BMIN{0} BPA{0} #_{0}      Peak_{0}    Dpeak_{0}     Flux_{0}    Dflux_{0}    RA---SIN_{0}   DEC--SIN_{0}  Dx_{0}      Dy_{0}       Maj_{0}     Min_{0}      PA_{0}    Dmaj_{0}    Dmin_{0}    Dpa_{0} #_{0}  MAJ-fit_{0} MIN-fit_{0} PA-fit_{0}    MAJ-dec_{0} MIN-dec_{0}  PA-dec_{0}  R_{0} MAJ-low_{0} MIN-low_{0}  PA-low_{0}    MAJ-hi_{0}  MIN-hi_{0}  PA-hi_{0}    Xpix_{0}   Ypix_{0}   MAXresid_{0}\n'.format(postfix)
         s = ' '.join(s.split())+'\n'
         s = s.replace(' ',',')
         os.system('touch catalogue_%s.csv' % postfix)
@@ -74,11 +74,16 @@ for file in os.listdir('./'):
         sad.go()
         image.zap()
     	lines = open('%s.fitout' % file).readlines()
-    	print len(lines)
+    	BMAJ = hduheader['BMAJ']
+        BMIN = hduheader['BMIN']
+        BPA = hduheader['BPA']
     	if len(lines) > 24:
             detections = detections + [file]
             open('%s_r.fitout' % file, 'w').writelines(file[:8]+'\n')
             open('%s_r.fitout' % file, 'a').writelines(str(rms)+'\n')
+            open('%s_r.fitout' % file, 'a').writelines(str(BMAJ)+'\n')
+            open('%s_r.fitout' % file, 'a').writelines(str(BMIN)+'\n')
+            open('%s_r.fitout' % file, 'a').writelines(str(BPA)+'\n')
             open('%s_r.fitout' % file, 'a').writelines(lines[18:])
     	os.system('rm %s.fitout' % file)
 
@@ -93,25 +98,3 @@ for file in os.listdir('./'):
         catalog_list = catalog_list + [file]
 SAD_fit_remove(catalog_list,postfix)
 os.system('rm *fitout')
-
-def substring(string_list):
-    out=[]
-    for s in string_list:
-        if not any([s in r for r in string_list if s != r]):
-            out.append(s)
-    return out
-'''
-def make_SAD_catalogue(file):
-    try:
-        f = open(file,'rw+')
-    except RunTimeError:
-        print 'No sources detected'
-    line = f.readlines()
-    thing = ['Peak','Component','MAJ-fit']
-    for i in thing:
-        line = [x for x in line if i not in x]
-    y = []
-    x=[]
-
-make_SAD_catalogue('catalogue.txt')
-'''
