@@ -74,9 +74,13 @@ for file in os.listdir('./'):
         sad.go()
         image.zap()
     	lines = open('%s.fitout' % file).readlines()
-    	BMAJ = hduheader['BMAJ']
-        BMIN = hduheader['BMIN']
-        BPA = hduheader['BPA']
+        try:
+        	BMAJ = hduheader['BMAJ']
+            BMIN = hduheader['BMIN']
+            BPA = hduheader['BPA']
+        except KeyError:
+            print 'Run casa_convert.py first to get beam parameters into header'
+            sys.exit()
     	if len(lines) > 24:
             detections = detections + [file]
             open('%s_r.fitout' % file, 'w').writelines(file[:8]+'\n')
