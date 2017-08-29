@@ -21,7 +21,7 @@ i=1
 auto_rms = True
 rms = 4.73189515179e-05
 edge = 100
-rms_box=250
+rms_box=400
 
 def SAD_fit_remove(files):
     if os.path.isfile('catalogue.csv') == False:
@@ -99,11 +99,11 @@ def substring(string_list):
         if not any([s in r for r in string_list if s != r]):
             out.append(s)
     return out
-
+'''
 def make_SAD_catalogue(file):
     try:
         f = open(file,'rw+')
-    except RunTimeError:
+    except:
         print 'No sources detected'
     line = f.readlines()
     thing = ['Peak','Component','MAJ-fit']
@@ -113,3 +113,4 @@ def make_SAD_catalogue(file):
     x=[]
 
 make_SAD_catalogue('catalogue.txt')
+'''
