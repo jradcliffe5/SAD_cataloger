@@ -75,9 +75,9 @@ for file in os.listdir('./'):
         image.zap()
         lines = open('%s.fitout' % file).readlines()
         try:
-            BMAJ = hduheader['BMAJ']
-            BMIN = hduheader['BMIN']
-            BPA = hduheader['BPA']
+            BMAJ = hdu_list[0].header['BMAJ']/hdu_list[0].header['CDELT2']
+            BMIN = hdu_list[0].header['BMIN']/hdu_list[0].header['CDELT2']
+            BPA = hdu_list[0].header['BPA']
         except KeyError:
             print 'Run casa_convert.py first to get beam parameters into header'
             sys.exit()
@@ -85,8 +85,8 @@ for file in os.listdir('./'):
             detections = detections + [file]
             open('%s_r.fitout' % file, 'w').writelines(file[:8]+'\n')
             open('%s_r.fitout' % file, 'a').writelines(str(rms)+'\n')
-            open('%s_r.fitout' % file, 'a').writelines(str(BMAJ*3600)+'\n')
-            open('%s_r.fitout' % file, 'a').writelines(str(BMIN*3600)+'\n')
+            open('%s_r.fitout' % file, 'a').writelines(str(BMAJ)+'\n')
+            open('%s_r.fitout' % file, 'a').writelines(str(BMIN)+'\n')
             open('%s_r.fitout' % file, 'a').writelines(str(BPA)+'\n')
             open('%s_r.fitout' % file, 'a').writelines(lines[18:])
         os.system('rm %s.fitout' % file)
