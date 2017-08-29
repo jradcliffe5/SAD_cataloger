@@ -75,9 +75,9 @@ for file in os.listdir('./'):
         image.zap()
         lines = open('%s.fitout' % file).readlines()
         try:
-            BMAJ = hdu_list[0].header['BMAJ']/hdu_list[0].header['CDELT2']
-            BMIN = hdu_list[0].header['BMIN']/hdu_list[0].header['CDELT2']
-            BPA = hdu_list[0].header['BPA']
+            BMAJ = hduheader['BMAJ']/hduheader['CDELT2'] ## assuming cell is same size on both axes
+            BMIN = hduheader['BMIN']/hduheader['CDELT2']
+            BPA = hduheader['BPA']
         except KeyError:
             print 'Run casa_convert.py first to get beam parameters into header'
             sys.exit()
