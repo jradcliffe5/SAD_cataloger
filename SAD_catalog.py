@@ -67,21 +67,21 @@ for file in os.listdir('./'):
         sad.cparm[1:] = 8*rms, 6*rms, 5*rms
         sad.indata = image
         sad.in2data = image
-    	sad.blc[1:] = edge,edge
-    	sad.trc[1:] = int(hduheader['NAXIS1'])-edge,int(hduheader['NAXIS2'])-edge
+        sad.blc[1:] = edge,edge
+        sad.trc[1:] = int(hduheader['NAXIS1'])-edge,int(hduheader['NAXIS2'])-edge
         sad.dparm[1] = 6*rms
         sad.fitout = 'PWD:%s.fitout' % file
         sad.go()
         image.zap()
-    	lines = open('%s.fitout' % file).readlines()
+        lines = open('%s.fitout' % file).readlines()
         try:
-        	BMAJ = hduheader['BMAJ']
+            BMAJ = hduheader['BMAJ']
             BMIN = hduheader['BMIN']
             BPA = hduheader['BPA']
         except KeyError:
             print 'Run casa_convert.py first to get beam parameters into header'
             sys.exit()
-    	if len(lines) > 24:
+        if len(lines) > 24:
             detections = detections + [file]
             open('%s_r.fitout' % file, 'w').writelines(file[:8]+'\n')
             open('%s_r.fitout' % file, 'a').writelines(str(rms)+'\n')
@@ -89,7 +89,7 @@ for file in os.listdir('./'):
             open('%s_r.fitout' % file, 'a').writelines(str(BMIN)+'\n')
             open('%s_r.fitout' % file, 'a').writelines(str(BPA)+'\n')
             open('%s_r.fitout' % file, 'a').writelines(lines[18:])
-    	os.system('rm %s.fitout' % file)
+        os.system('rm %s.fitout' % file)
 
 os.system('touch detections.txt')
 thefile = open('detections.txt', 'w')
